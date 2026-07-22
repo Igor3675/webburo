@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>Blogy</title>
+<style>
+  :root{
+    --primary:#5352EE;
+    --accent:#FFD166;
+    --light:#9996FF;
+    --ink:#242349;
+    --text:#565587;
+    --muted:#9998c0;
+    --bg:#fff;
+    --gray-bg:#f6f6fb;
+    --tag-bg:#EDECFF;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+     font-family:"Manrope","Segoe UI",Arial,sans-serif;
+    color:var(--ink);
+    background:#fff;
+  }
+  a{text-decoration:none; color:inherit;}
+  ul{list-style:none;}
+  img{max-width:100%; display:block;}
+  section{padding:70px 60px;}
+  .section-head{max-width:1300px; margin:0 auto 40px;}
+  .eyebrow{
+    display:flex; align-items:center; gap:14px;
+    color:var(--light); font-size:13px; font-weight:600;
+    letter-spacing:2px; text-transform:uppercase; margin-bottom:10px;
+  }
+  .eyebrow::after{content:""; height:2px; width:160px; background:var(--accent);}
+  h2.title{font-size:30px; font-weight:800; color:var(--ink);}
+
+  /* ===================== HEADER ===================== */
+  header.topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:20px 60px; border-bottom:1px solid #eee;
+  }
+  .logo{
+    width: 50px;
+    height: 50px;
+  }
+  .logo .dot{color:var(--accent);}
+  .socials{display:flex; gap:16px;}
+  .socials a{color:var(--primary); display:flex;}
+  .socials svg{width:19px; height:19px;}
+
+  nav.mainnav{background:var(--gray-bg);}
+  nav.mainnav ul{
+    display:flex; justify-content:center; gap:46px; padding:18px 0;
+  }
+  nav.mainnav a{font-weight:600; font-size:15px; color:var(--ink); display:flex; align-items:center; gap:5px;}
+  nav.mainnav li.active a{color:var(--primary);}
+  nav.mainnav a:hover{color:var(--primary);}
+
+  /* ===================== HERO GRID ===================== */
+  .hero-grid{
+    max-width:1300px; margin:50px auto 0;
+    display:grid; grid-template-columns:2fr 1fr; gap:16px;
+  }
+  .card-photo{
+    position:relative; border-radius:10px; overflow:hidden;
+    display:flex; align-items:flex-end; min-height:260px;
+    background-size:cover; background-position:center; color:#fff;
+  }
+  .card-photo::before{
+    content:""; position:absolute; inset:0;
+    background:linear-gradient(to top, rgba(36,35,73,.8) 0%, rgba(36,35,73,.2) 45%, rgba(36,35,73,0) 75%);
+  }
+  .card-photo .cc{position:relative; padding:22px 26px; width:100%;}
+  .card-photo .meta{display:flex; align-items:center; gap:10px; font-size:13px; margin-bottom:10px;}
+  .card-photo .meta .dot-sep{width:4px; height:4px; border-radius:50%; background:#fff; opacity:.7;}
+  .card-photo .ct{font-size:20px; font-weight:600; line-height:1.3;}
+  .card-photo.big{grid-column:1; grid-row:1; min-height:440px; background-image:linear-gradient(rgba(30,30,60,.1),rgba(30,30,60,.1)),url('photo/2.jpg');}
+  .card-photo.big .ct{font-size:28px;}
+  .card-photo.tall{grid-column:2; grid-row:1; min-height:440px; background-image:linear-gradient(rgba(20,30,20,.1),rgba(20,30,20,.1)),url('https://images.unsplash.com/photo-1471506480208-91b3a4cc78be?w=800&q=80');}
+  .hero-bottom{grid-column:1/span 2; display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+  .card-photo.small{min-height:220px;}
+  .c1{background-image:linear-gradient(rgba(20,10,5,.15),rgba(20,10,5,.15)),url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=700&q=80');}
+  .c2{background-image:linear-gradient(rgba(10,10,10,.1),rgba(10,10,10,.1)),url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=700&q=80');}
+  .c3{background-image:linear-gradient(rgba(10,10,10,.1),rgba(10,10,10,.1)),url('https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?w=700&q=80');}
+
+  /* ===================== FEATURED POSTS ===================== */
+  .featured-grid{
+    max-width:1300px; margin:0 auto;
+    display:grid; grid-template-columns:repeat(3,1fr); gap:26px;  
+  }
+  .fcard{
+    position:relative; border-radius:10px; overflow:hidden; min-height:600px;
+    display:flex; align-items:flex-end; color:#fff; background-size:cover; background-position:center;
+  }
+  .fcard::before{content:""; position:absolute; inset:0; background:linear-gradient(to top, rgba(20,20,45,.9) 0%, rgba(20,20,45,.15) 55%, rgba(20,20,45,0) 80%);}
+  .fcard .fc{position:relative; padding:26px 28px; width:100%;}
+  .fcard .meta{display:flex; flex-wrap:wrap; align-items:center; gap:16px; font-size:13px; margin-bottom:16px; opacity:.95;}
+  .fcard .meta span{display:flex; align-items:center; gap:6px;}
+  .fcard .meta svg{width:14px; height:14px;}
+  .fcard h3{font-size:21px; font-weight:700; line-height:1.35; margin-bottom:14px;}
+  .fcard p{font-size:13.5px; line-height:1.7; opacity:.9; margin-bottom:18px;}
+  .fcard .more{display:inline-flex; align-items:center; gap:8px; font-weight:700; font-size:14px; color:var(--accent);}
+  .f1{background-image:url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=700&q=80');}
+  .f2{background-image:url('https://images.unsplash.com/photo-1497515114629-f71d768fd07c?w=700&q=80');}
+  .f3{background-image:url('https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=700&q=80');}
+
+  /* ===================== CATEGORY SECTION ===================== */
+  .cat-top{
+    max-width:1300px; margin:0 auto 50px;
+    display:grid; grid-template-columns:repeat(3,1fr); gap:30px;
+  }
+  .cat-top img{width:100%; height:230px; object-fit:cover; border-radius:8px; margin-bottom:18px;}
+  .cat-label{color:var(--primary); font-size:12px; font-weight:700; letter-spacing:.5px; margin-bottom:12px;}
+  .cat-author{display:flex; align-items:center; gap:10px; margin-bottom:14px;}
+  .cat-author img{width:30px; height:30px; border-radius:50%; margin:0; object-fit:cover;}
+  .cat-author .who{font-size:14px; font-weight:600; color:var(--ink);}
+  .cat-author .when{font-size:13px; color:var(--muted);}
+  .cat-top h3{font-size:19px; font-weight:700; color:var(--ink); line-height:1.4;}
+
+  .cat-bottom{
+    max-width:1300px; margin:0 auto;
+    display:grid; grid-template-columns:repeat(3,1fr); gap:30px 40px;
+  }
+  .mini-post{display:flex; gap:16px; align-items:flex-start;}
+  .mini-post img{width:80px; height:80px; object-fit:cover; border-radius:6px; flex-shrink:0;}
+  .mini-post .cat-label{margin-bottom:6px;}
+  .mini-post h4{font-size:15px; font-weight:700; color:var(--ink); line-height:1.4; margin-bottom:8px;}
+  .mini-post .when{font-size:12.5px; color:var(--muted);}
+
+  /* ===================== LATEST POSTS ===================== */
+  .latest-grid{
+    max-width:1300px; margin:0 auto;
+    display:grid; grid-template-columns:repeat(3,1fr); gap:30px;
+  }
+  .post-card{
+    background:#fff; border-radius:8px; box-shadow:0 10px 30px rgba(83,82,238,.08); overflow:hidden;
+  }
+  .post-card img{width:100%; height:270px; object-fit:cover;}
+  .post-body{padding:24px 26px 28px;}
+  .post-cat{color:var(--muted); font-size:14px; margin-bottom:10px;}
+  .post-title{font-size:19px; font-weight:700; color:var(--ink); line-height:1.35; margin-bottom:20px;}
+  .post-author{display:flex; align-items:center; gap:12px;}
+  .post-author img{width:42px; height:42px; border-radius:50%; object-fit:cover;}
+  .post-author .n{font-weight:700; font-size:14px; color:var(--ink);}
+  .post-author .d{font-size:13px; color:var(--muted); margin-top:2px;}
+
+  /* ===================== NEWSLETTER ===================== */
+  .newsletter{
+    max-width:1300px; margin:0 auto; background:var(--gray-bg);
+    border-radius:16px; padding:70px 60px;
+    display:grid; grid-template-columns:1fr 300px; align-items:center; gap:30px;
+  }
+  .newsletter h2{font-size:32px; font-weight:800; color:var(--ink); margin-bottom:18px;}
+  .newsletter p{font-size:15px; color:var(--text); line-height:1.7; margin-bottom:30px; max-width:520px;}
+  .sub-form{display:flex; max-width:480px;}
+  .sub-form input{
+    flex:1; padding:15px 20px; border:1.5px solid var(--light);
+    border-radius:30px 0 0 30px; outline:none; font-size:14px;
+  }
+  .sub-form button{
+    background:var(--primary); color:#fff; border:none; padding:0 32px;
+    border-radius:0 30px 30px 0; font-weight:700; font-size:14px; cursor:pointer;
+  }
+  .sub-form button:hover{background:#403fd1;}
+  .newsletter-img{
+    border-radius:12px; height:280px;
+    background:linear-gradient(160deg,#e4e3ff,#f6f6fb);
+    display:flex; align-items:center; justify-content:center; font-size:60px;
+  }
+
+  /* ===================== FOOTER ===================== */
+  footer{padding:60px 60px 40px;}
+  .footer-top{
+    max-width:1300px; margin:0 auto;
+    display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr 1fr; gap:30px;
+    padding-bottom:40px;
+  }
+  .footer-top h3.brand{font-size:24px; font-weight:600; color:var(--ink); margin-bottom:18px;}
+  .footer-top p{font-size:14px; color:var(--text); line-height:1.8;}
+  .footer-top .contact-line{margin-top:14px; font-size:14px; color:var(--text);}
+  .footer-social{display:flex; gap:10px; margin-top:20px;}
+  .footer-social a{
+    width:36px; height:36px; border-radius:50%; border:1.5px solid #ddd;
+    display:flex; align-items:center; justify-content:center; color:var(--ink);
+  }
+  .footer-social a:hover{background:var(--primary); border-color:var(--primary); color:#fff;}
+  .footer-col h4{font-size:15px; font-weight:700; color:var(--ink); margin-bottom:18px;}
+  .footer-col li{margin-bottom:12px;}
+  .footer-col a{font-size:14px; color:var(--text);}
+  .footer-col a:hover{color:var(--primary);}
+  .footer-bottom{
+    max-width:1300px; margin:0 auto; border-top:1px solid #eee; padding-top:24px;
+    text-align:center; font-size:13px; color:var(--muted);
+  }
+
+  @media (max-width:1000px){
+    section{padding:50px 24px;}
+    .hero-grid{grid-template-columns:1fr;}
+    .card-photo.big,.card-photo.tall{grid-column:1;}
+    .hero-bottom{grid-column:1; grid-template-columns:1fr;}
+    .featured-grid, .cat-top, .cat-bottom, .latest-grid{grid-template-columns:1fr;}
+    .newsletter{grid-template-columns:1fr;}
+    .footer-top{grid-template-columns:1fr 1fr;}
+    nav.mainnav ul{flex-wrap:wrap; gap:20px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== HEADER ===================== -->
+<header class="topbar">
+  <div class="logo">
+    <img src="photo/1.png"> 
+  </div>
+  <div class="socials">
+    <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12Z"/></svg></a>
+    <a href="#" aria-label="X"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.5 8.6L23.3 22h-7l-5.5-6.7L4.5 22H1.4l8-9.2L1 2h7.2l5 6.1L18.9 2Zm-1.2 18h1.7L7.4 4H5.6l12.1 16Z"/></svg></a>
+    <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+  </div>
+</header>
+
+<nav class="mainnav">
+  <ul>
+    <li class="active"><a href="#">Home</a></li>
+    <li><a href="#">О нас</a></li>
+    <li><a href="#">Category</a></li>
+    <li><a href="#">Blog Details</a></li>
+    <li><a href="#">Author Profile</a></li>
+    <li><a href="#">Pages ▾</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ===================== HERO GRID ===================== -->
+<section>
+  <div class="hero-grid">
+    <div class="card-photo big">
+      <div class="cc">
+        <div class="meta"><span>Apr. 14th, 2025</span><span class="dot-sep"></span><span>Technology</span></div>
+        <div class="ct">Lorem ipsum dolor sit amet, consectetur adipiscing elit</div>
+      </div>
+    </div>
+    <div class="card-photo tall">
+      <div class="cc">
+        <div class="meta"><span>Apr. 14th, 2025</span><span class="dot-sep"></span><span>Security</span></div>
+        <div class="ct">Sed do eiusmod tempor incididunt ut labore</div>
+      </div>
+    </div>
+    <div class="hero-bottom">
+      <div class="card-photo small c1">
+        <div class="cc">
+          <div class="meta"><span>Apr. 14th, 2025</span><span class="dot-sep"></span><span>Career</span></div>
+          <div class="ct">Ut enim ad minim veniam, quis nostrud exercitation</div>
+        </div>
+      </div>
+      <div class="card-photo small c2">
+        <div class="cc">
+          <div class="meta"><span>Apr. 14th, 2025</span><span class="dot-sep"></span><span>Cloud</span></div>
+          <div class="ct">Adipiscing elit, sed do eiusmod tempor incididunt</div>
+        </div>
+      </div>
+      <div class="card-photo small c3">
+        <div class="cc">
+          <div class="meta"><span>Apr. 14th, 2025</span><span class="dot-sep"></span><span>Programming</span></div>
+          <div class="ct">Excepteur sint occaecat cupidatat non proident</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FEATURED POSTS ===================== -->
+<section>
+  <div class="section-head">
+    <div class="eyebrow">FEATURED POSTS</div>
+    <h2 class="title">CHECK OUR FEATURED POSTS</h2>
+  </div>
+  <div class="featured-grid">
+
+    <div class="fcard f1">
+      <div class="fc">
+        <div class="meta">
+          <span>👤 Julia Parker</span>
+          <span>🕒 Jan 15, 2025</span>
+        </div>
+        <div class="meta" style="margin-top:-8px;"><span>💬 6 Comments</span></div>
+        <h3>Neque porro quisquam est qui dolorem ipsum quia dolor sit amet</h3>
+        <p>Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Fusce porttitor...</p>
+        <a class="more" href="#">Read More →</a>
+      </div>
+    </div>
+
+    <div class="fcard f2">
+      <div class="fc">
+        <div class="meta">
+          <span>👤 Mark Wilson</span>
+          <span>🕒 Jan 18, 2025</span>
+        </div>
+        <div class="meta" style="margin-top:-8px;"><span>💬 6 Comments</span></div>
+        <h3>Sed ut perspiciatis unde omnis iste natus error sit voluptatem</h3>
+        <p>Maecenas tempus tellus eget condimentum rhoncus sem quam semper libero sit amet adipiscing sem...</p>
+        <a class="more" href="#">Read More →</a>
+      </div>
+    </div>
+
+    <div class="fcard f3">
+      <div class="fc">
+        <div class="meta">
+          <span>👤 Sarah Johnson</span>
+          <span>🕒 Jan 21, 2025</span>
+        </div>
+        <div class="meta" style="margin-top:-8px;"><span>💬 15 Comments</span></div>
+        <h3>At vero eos et accusamus et iusto odio dignissimos ducimus</h3>
+        <p>Nullam dictum felis eu pede mollis pretium integer tincidunt cras dapibus vivamus elementum semper...</p>
+        <a class="more" href="#">Read More →</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===================== CATEGORY SECTION ===================== -->
+<section style="background:var(--gray-bg);">
+  <div class="section-head">
+    <div class="eyebrow">CATEGORY SECTION</div>
+    <h2 class="title">CATEGORY SECTION</h2>
+  </div>
+
+  <div class="cat-top">
+    <div>
+      <img src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=700&q=80" alt="">
+      <div class="cat-label">HEALTH</div>
+      <div class="cat-author">
+        <img src="https://randomuser.me/api/portraits/women/12.jpg" alt="William G.">
+        <span class="who">William G.</span> <span class="when">— 28 April 2024</span>
+      </div>
+      <h3>Sed ut perspiciatis unde omnis iste natus error sit voluptatem</h3>
+    </div>
+    <div>
+      <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=700&q=80" alt="">
+      <div class="cat-label">EDUCATION</div>
+      <div class="cat-author">
+        <img src="https://randomuser.me/api/portraits/men/23.jpg" alt="Emma D.">
+        <span class="who">Emma D.</span> <span class="when">— 30 May 2024</span>
+      </div>
+      <h3>Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis</h3>
+    </div>
+    <div>
+      <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=700&q=80" alt="">
+      <div class="cat-label">GAMING</div>
+      <div class="cat-author">
+        <img src="https://randomuser.me/api/portraits/women/33.jpg" alt="James F.">
+        <span class="who">James F.</span> <span class="when">— 3 June 2024</span>
+      </div>
+      <h3>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit</h3>
+    </div>
+  </div>
+
+  <div class="cat-bottom">
+    <div class="mini-post">
+      <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=200&q=80" alt="">
+      <div>
+        <div class="cat-label">Gaming</div>
+        <h4>Quis autem vel eum iure reprehenderit qui in ea voluptate</h4>
+        <div class="when">2 mins read • 6 April 2026</div>
+      </div>
+    </div>
+    <div class="mini-post">
+      <img src="https://images.unsplash.com/photo-1497515114629-f71d768fd07c?w=200&q=80" alt="">
+      <div>
+        <div class="cat-label">Gaming</div>
+        <h4>At vero eos et accusamus et iusto</h4>
+        <div class="when">2 mins read • 12 June 2026</div>
+      </div>
+    </div>
+    <div class="mini-post">
+      <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=200&q=80" alt="">
+      <div>
+        <div class="cat-label">Gaming</div>
+        <h4>Et harum quidem rerum facilis est et expedita distinctio</h4>
+        <div class="when">2 mins read • 9 May 2026</div>
+      </div>
+    </div>
+    <div class="mini-post">
+      <img src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=200&q=80" alt="">
+      <div>
+        <div class="cat-label">Gaming</div>
+        <h4>Nam libero tempore, cum soluta nobis est eligendi</h4>
+        <div class="when">2 mins read • 15 July 2026</div>
+      </div>
+    </div>
+    <div class="mini-post">
+      <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=200&q=80" alt="">
+      <div>
+        <div class="cat-label">Gaming</div>
+        <h4>Temporibus autem quibusdam et aut officiis debitis</h4>
+        <div class="when">2 mins read • 18 August 2026</div>
+      </div>
+    </div>
+    <div class="mini-post">
+      <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=200&q=80" alt="">
+      <div>
+        <div class="cat-label">Gaming</div>
+        <h4>Itaque earum rerum hic tenetur a sapiente delectus</h4>
+        <div class="when">2 mins read • 21 September 2026</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== LATEST POSTS ===================== -->
+<section>
+  <div class="section-head">
+    <div class="eyebrow">LATEST POSTS</div>
+    <h2 class="title">CHECK OUR LATEST POSTS</h2>
+  </div>
+  <div class="latest-grid">
+
+    <div class="post-card">
+      <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80" alt="">
+      <div class="post-body">
+        <div class="post-cat">Politics</div>
+        <div class="post-title">Dolorum optio tempore voluptas dignissimos</div>
+        <div class="post-author">
+          <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="">
+          <div><div class="n">Maria Doe</div><div class="d">Jan 1, 2022</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="post-card">
+      <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80" alt="">
+      <div class="post-body">
+        <div class="post-cat">Sports</div>
+        <div class="post-title">Nisi magni odit consequatur autem nulla dolorem</div>
+        <div class="post-author">
+          <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="">
+          <div><div class="n">Allisa Mayer</div><div class="d">Jun 5, 2022</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="post-card">
+      <img src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=800&q=80" alt="">
+      <div class="post-body">
+        <div class="post-cat">Entertainment</div>
+        <div class="post-title">Possimus soluta ut id suscipit ea ut in quo quia et soluta</div>
+        <div class="post-author">
+          <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="">
+          <div><div class="n">Mark Dower</div><div class="d">Jun 22, 2022</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="post-card">
+      <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80" alt="">
+      <div class="post-body">
+        <div class="post-cat">Sports</div>
+        <div class="post-title">Non rem rerum nam cum quo minus olor distincti</div>
+        <div class="post-author">
+          <img src="https://randomuser.me/api/portraits/women/58.jpg" alt="">
+          <div><div class="n">Aisha Bell</div><div class="d">Jul 2, 2022</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="post-card">
+      <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80" alt="">
+      <div class="post-body">
+        <div class="post-cat">Politics</div>
+        <div class="post-title">Accusamus quaerat aliquam qui debitis facilis consequatur</div>
+        <div class="post-author">
+          <img src="https://randomuser.me/api/portraits/men/41.jpg" alt="">
+          <div><div class="n">Tom Reyes</div><div class="d">Aug 9, 2022</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="post-card">
+      <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80" alt="">
+      <div class="post-body">
+        <div class="post-cat">Entertainment</div>
+        <div class="post-title">Distinctio provident quibusdam numquam aperiam aut</div>
+        <div class="post-author">
+          <img src="https://randomuser.me/api/portraits/women/21.jpg" alt="">
+          <div><div class="n">Nora Kim</div><div class="d">Sep 14, 2022</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===================== NEWSLETTER ===================== -->
+<section>
+  <div class="newsletter">
+    <div>
+      <h2>Subscribe to our newsletter</h2>
+      <p>Proin eget tortor risus. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Curabitur aliquet quam id dui posuere blandit.</p>
+      <form class="sub-form" onsubmit="return false;">
+        <input type="email" placeholder="Email address...">
+        <button type="submit">Subscribe</button>
+      </form>
+    </div>
+    <div class="newsletter-img">💌</div>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <h3 class="brand">Blogy</h3>
+      <p>A108 Adam Street<br>New York, NY 535022</p>
+      <p class="contact-line"><b>Phone:</b> +1 5589 55488 55</p>
+      <p class="contact-line"><b>Email:</b> info@example.com</p>
+      <div class="footer-social">
+        <a href="#" aria-label="X"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.5 8.6L23.3 22h-7l-5.5-6.7L4.5 22H1.4l8-9.2L1 2h7.2l5 6.1L18.9 2Zm-1.2 18h1.7L7.4 4H5.6l12.1 16Z"/></svg></a>
+        <a href="#" aria-label="Facebook"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12Z"/></svg></a>
+        <a href="#" aria-label="Instagram"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+        <a href="#" aria-label="LinkedIn"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-1 1.83-2 3.77-2 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.6c0-1.35-.03-3.1-1.9-3.1-1.9 0-2.2 1.5-2.2 3v5.7h-4V9Z"/></svg></a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Useful Links</h4>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">About us</a></li>
+        <li><a href="#">Services</a></li>
+        <li><a href="#">Terms of service</a></li>
+        <li><a href="#">Privacy policy</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Our Services</h4>
+      <ul>
+        <li><a href="#">Web Design</a></li>
+        <li><a href="#">Web Development</a></li>
+        <li><a href="#">Product Management</a></li>
+        <li><a href="#">Marketing</a></li>
+        <li><a href="#">Graphic Design</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Hic solutasetp</h4>
+      <ul>
+        <li><a href="#">Molestiae accusamus iure</a></li>
+        <li><a href="#">Excepturi dignissimos</a></li>
+        <li><a href="#">Suscipit distinctio</a></li>
+        <li><a href="#">Dilecta</a></li>
+        <li><a href="#">Sit quas consectetur</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Nobis illum</h4>
+      <ul>
+        <li><a href="#">Ipsum</a></li>
+        <li><a href="#">Laudantium dolorum</a></li>
+        <li><a href="#">Dinera</a></li>
+        <li><a href="#">Trodelas</a></li>
+        <li><a href="#">Flexo</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    © 2026 Blogy. Все права защищены.
+  </div>
+</footer>
+
+</body>
+</html>

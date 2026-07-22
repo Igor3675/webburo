@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blogy — Blog Category</title>
+<style>
+  :root{
+    --primary:#5352EE;
+    --accent:#FFD166;
+    --light:#9996FF;
+    --ink:#242349;
+    --text:#565587;
+    --muted:#9998c0;
+    --gray-bg:#f6f6fb;
+    --tag-bg:#EDECFF;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:"Poppins","Segoe UI",Arial,sans-serif;
+    color:var(--ink);
+    background:#fff;
+  }
+  a{text-decoration:none; color:inherit;}
+  ul{list-style:none;}
+  img{max-width:100%; display:block;}
+
+  /* ===================== HEADER ===================== */
+  header.topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:20px 60px; border-bottom:1px solid #eee;
+  }
+  .logo{font-size:26px; font-weight:600; color:var(--ink);}
+  .logo .dot{color:var(--accent);}
+  .top-right{display:flex; align-items:center; gap:22px;}
+  .socials{display:flex; gap:16px;}
+  .socials a{color:var(--primary); display:flex;}
+  .socials svg{width:19px; height:19px;}
+  .search-box{position:relative;}
+  .search-box input{
+    width:220px; padding:10px 40px 10px 16px; border:1px solid var(--light);
+    border-radius:4px; font-size:14px; outline:none; color:var(--ink);
+  }
+  .search-box input::placeholder{color:#b3b2df;}
+  .search-box svg{position:absolute; right:12px; top:50%; transform:translateY(-50%); width:16px; height:16px; color:var(--primary);}
+
+  nav.mainnav{background:var(--gray-bg);}
+  nav.mainnav ul{display:flex; justify-content:center; gap:46px; padding:18px 0;}
+  nav.mainnav a{font-weight:600; font-size:15px; color:var(--ink); display:flex; align-items:center; gap:5px;}
+  nav.mainnav li.active a{color:var(--primary);}
+  nav.mainnav a:hover{color:var(--primary);}
+
+  /* ===================== PAGE HERO ===================== */
+  .page-hero{padding:60px 24px 50px; text-align:center;}
+  .breadcrumb{
+    display:flex; justify-content:center; align-items:center; gap:8px;
+    font-size:14px; color:var(--muted); margin-bottom:26px;
+  }
+  .breadcrumb a{color:var(--muted);}
+  .breadcrumb .current{color:var(--primary); font-weight:600;}
+  .breadcrumb svg{width:15px; height:15px;}
+  .page-hero h1{font-size:38px; font-weight:800; color:var(--ink); margin-bottom:18px;}
+  .page-hero p{max-width:640px; margin:0 auto; color:var(--text); font-size:15px; line-height:1.8;}
+
+  /* ===================== MAIN LAYOUT ===================== */
+  .layout{
+    max-width:1300px; margin:0 auto; padding:0 60px 70px;
+    display:grid; grid-template-columns:2fr 1fr; gap:36px;
+  }
+
+  .posts-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:26px; align-content:start;
+  }
+  .post-card{
+    background:#fff; border-radius:8px; overflow:hidden;
+    box-shadow:0 6px 20px rgba(83,82,238,.08);
+  }
+  .post-card img{width:100%; height:190px; object-fit:cover;}
+  .post-body{padding:20px 22px 24px;}
+  .post-cat{color:var(--muted); font-size:14px; margin-bottom:10px;}
+  .post-title{font-size:17px; font-weight:700; color:var(--ink); line-height:1.4; margin-bottom:18px;}
+  .post-author{display:flex; align-items:center; gap:12px;}
+  .post-author img{width:38px; height:38px; border-radius:50%; object-fit:cover;}
+  .post-author .n{font-weight:700; font-size:13.5px; color:var(--ink);}
+  .post-author .d{font-size:12.5px; color:var(--muted); margin-top:2px;}
+
+  /* ===================== SIDEBAR ===================== */
+  .sidebar{display:flex; flex-direction:column; gap:24px;}
+  .widget{
+    background:var(--gray-bg); border-radius:10px; padding:26px;
+  }
+  .widget-title{
+    font-size:17px; font-weight:700; color:var(--ink);
+    border-left:4px solid var(--accent); padding-left:12px; margin-bottom:20px;
+  }
+  .sidebar-search{position:relative;}
+  .sidebar-search input{
+    width:100%; padding:13px 46px 13px 16px; border:1px solid #e2e1f5;
+    border-radius:6px; font-size:14px; outline:none;
+  }
+  .sidebar-search svg{
+    position:absolute; right:14px; top:50%; transform:translateY(-50%);
+    width:17px; height:17px; color:var(--primary);
+  }
+  .cat-list li{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:12px 0; border-bottom:1px solid #e6e5f5; font-size:14.5px; color:var(--text);
+  }
+  .cat-list li:last-child{border-bottom:none;}
+  .cat-list li:hover{color:var(--primary);}
+  .cat-list .count{color:var(--muted); font-size:13px;}
+  .recent-post{display:flex; gap:14px; align-items:flex-start; margin-bottom:18px;}
+  .recent-post:last-child{margin-bottom:0;}
+  .recent-post img{width:64px; height:64px; object-fit:cover; border-radius:6px; flex-shrink:0;}
+  .recent-post h4{font-size:14px; font-weight:700; color:var(--ink); line-height:1.4; margin-bottom:6px;}
+  .recent-post .d{font-size:12.5px; color:var(--muted); font-style:italic;}
+  .tags{display:flex; flex-wrap:wrap; gap:10px;}
+  .tags span{
+    background:#fff; color:var(--text); font-size:13px; font-weight:600;
+    padding:7px 14px; border-radius:20px; cursor:default;
+  }
+  .tags span:hover{background:var(--primary); color:#fff;}
+
+  /* ===================== PAGINATION ===================== */
+  .pagination{
+    display:flex; justify-content:center; gap:10px; margin:50px 0 60px;
+  }
+  .pagination a, .pagination span.dots{
+    width:38px; height:38px; border-radius:50%; border:1.5px solid var(--light);
+    display:flex; align-items:center; justify-content:center;
+    font-size:14px; font-weight:600; color:var(--primary);
+  }
+  .pagination a.active{background:var(--primary); border-color:var(--primary); color:#fff;}
+  .pagination a:hover{background:var(--tag-bg);}
+  .pagination span.dots{border:none; color:var(--muted);}
+
+  /* ===================== FOOTER ===================== */
+  footer{padding:0 60px 40px;}
+  .footer-top{
+    max-width:1300px; margin:0 auto; border-top:1px solid #eee;
+    display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr 1fr; gap:30px;
+    padding:50px 0 40px;
+  }
+  .footer-top h3.brand{font-size:24px; font-weight:600; color:var(--ink); margin-bottom:18px;}
+  .footer-top p{font-size:14px; color:var(--text); line-height:1.8;}
+  .footer-top .contact-line{margin-top:14px; font-size:14px; color:var(--text);}
+  .footer-social{display:flex; gap:10px; margin-top:20px;}
+  .footer-social a{
+    width:36px; height:36px; border-radius:50%; border:1.5px solid #ddd;
+    display:flex; align-items:center; justify-content:center; color:var(--ink);
+  }
+  .footer-social a:hover{background:var(--primary); border-color:var(--primary); color:#fff;}
+  .footer-col h4{font-size:15px; font-weight:700; color:var(--ink); margin-bottom:18px;}
+  .footer-col li{margin-bottom:12px;}
+  .footer-col a{font-size:14px; color:var(--text);}
+  .footer-col a:hover{color:var(--primary);}
+  .footer-bottom{
+    max-width:1300px; margin:0 auto; border-top:1px solid #eee; padding-top:24px;
+    text-align:center; font-size:13px; color:var(--muted);
+  }
+  .footer-bottom b{color:var(--ink);}
+  .footer-bottom .credit{margin-top:6px;}
+  .footer-bottom .credit a{color:var(--primary); font-weight:600;}
+
+  .scroll-top{
+    position:fixed; right:24px; bottom:24px;
+    width:46px; height:46px; border-radius:50%;
+    background:var(--primary); color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 6px 16px rgba(83,82,238,.35); cursor:pointer;
+  }
+  .scroll-top svg{width:20px; height:20px;}
+
+  @media (max-width:1000px){
+    header.topbar{flex-direction:column; gap:16px; padding:18px 24px;}
+    nav.mainnav ul{flex-wrap:wrap; gap:20px; padding:16px;}
+    .layout{grid-template-columns:1fr; padding:0 24px 50px;}
+    .posts-grid{grid-template-columns:1fr;}
+    .footer-top{grid-template-columns:1fr 1fr; padding:50px 24px 40px;}
+    footer{padding:0;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== HEADER ===================== -->
+<header class="topbar">
+  <div class="logo">Blogy<span class="dot">.</span></div>
+  <div class="top-right">
+    <div class="socials">
+      <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12Z"/></svg></a>
+      <a href="#" aria-label="X"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.5 8.6L23.3 22h-7l-5.5-6.7L4.5 22H1.4l8-9.2L1 2h7.2l5 6.1L18.9 2Zm-1.2 18h1.7L7.4 4H5.6l12.1 16Z"/></svg></a>
+      <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+    </div>
+    <div class="search-box">
+      <input type="text" placeholder="Search...">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </div>
+  </div>
+</header>
+
+<nav class="mainnav">
+  <ul>
+    <li><a href="#">Home</a></li>
+    <li><a href="#">About</a></li>
+    <li class="active"><a href="#">Category</a></li>
+    <li><a href="#">Blog Details</a></li>
+    <li><a href="#">Author Profile</a></li>
+    <li><a href="#">Pages ▾</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ===================== PAGE HERO ===================== -->
+<div class="page-hero">
+  <div class="breadcrumb">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
+    <a href="#">Home</a> / <a href="#">Category</a> / <span class="current">Category</span>
+  </div>
+  <h1>Blog Category</h1>
+  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.</p>
+</div>
+
+<!-- ===================== MAIN LAYOUT ===================== -->
+<div class="layout">
+
+  <!-- posts grid -->
+  <div class="posts-grid">
+
+    <div class="post-card">
+      <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&q=80" alt="">
+      <div class="post-body">
+        <div class="post-cat">Politics</div>
+        <div class="post-title">Dolorum optio tempore voluptas dignissimos</div>
+        <div class="post-author">
+          <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="">
+          <div><div class="n">Maria Doe</div><div class="d">Jan 1, 2022</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="post-card">
+      <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80" alt="">
+      <div class="post-body">
+        <div class="post-cat">Sports</div>
+        <div class="post-title">Nisi magni odit consequatur autem nulla dolorem</div>
+        <div class="post-author">
+          <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="">
+          <div><div class="n">Allisa Mayer</div><div class="d">Jun 5, 2022</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="post-card">
+      <img src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=600&q=80" alt="">
+      <div class="post-body">
+        <div class="post-cat">Entertainment</div>
+        <div class="post-title">Possimus soluta ut id suscipit ea ut in quo quia et soluta</div>
+        <div class="post-author">
+          <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="">
+          <div><div class="n">Mark Dower</div><div class="d">Jun 22, 2022</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="post-card">
+      <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=600&q=80" alt="">
+      <div class="post-body">
+        <div class="post-cat">Sports</div>
+        <div class="post-title">Non rem rerum nam cum quo minus olor distincti</div>
+        <div class="post-author">
+          <img src="https://randomuser.me/api/portraits/women/58.jpg" alt="">
+          <div><div class="n">Lisa Neymar</div><div class="d">Jun 30, 2022</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="post-card">
+      <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&q=80" alt="">
+      <div class="post-body">
+        <div class="post-cat">Politics</div>
+        <div class="post-title">Accusamus quaerat aliquam qui debitis facilis consequatur</div>
+        <div class="post-author">
+          <img src="https://randomuser.me/api/portraits/men/41.jpg" alt="">
+          <div><div class="n">Denis Peterson</div><div class="d">Jan 30, 2022</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="post-card">
+      <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80" alt="">
+      <div class="post-body">
+        <div class="post-cat">Entertainment</div>
+        <div class="post-title">Distinctio provident quibusdam numquam aperiam aut</div>
+        <div class="post-author">
+          <img src="https://randomuser.me/api/portraits/women/21.jpg" alt="">
+          <div><div class="n">Mika Lendon</div><div class="d">Feb 14, 2022</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- sidebar -->
+  <div class="sidebar">
+
+    <div class="widget">
+      <div class="widget-title">Search</div>
+      <div class="sidebar-search">
+        <input type="text" placeholder="Search...">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </div>
+    </div>
+
+    <div class="widget">
+      <div class="widget-title">Categories</div>
+      <ul class="cat-list">
+        <li><span>General</span> <span class="count">(25)</span></li>
+        <li><span>Lifestyle</span> <span class="count">(12)</span></li>
+        <li><span>Travel</span> <span class="count">(5)</span></li>
+        <li><span>Design</span> <span class="count">(22)</span></li>
+        <li><span>Creative</span> <span class="count">(8)</span></li>
+        <li><span>Education</span> <span class="count">(14)</span></li>
+      </ul>
+    </div>
+
+    <div class="widget">
+      <div class="widget-title">Recent Posts</div>
+
+      <div class="recent-post">
+        <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=150&q=80" alt="">
+        <div><h4>Nihil blanditiis at in nihil autem</h4><div class="d">Jan 1, 2026</div></div>
+      </div>
+      <div class="recent-post">
+        <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=150&q=80" alt="">
+        <div><h4>Quidem autem et impedit</h4><div class="d">Jan 1, 2026</div></div>
+      </div>
+      <div class="recent-post">
+        <img src="https://images.unsplash.com/photo-1512314889357-e157c22f938d?w=150&q=80" alt="">
+        <div><h4>Id quia et et ut maxime similique occaecati ut</h4><div class="d">Jan 1, 2026</div></div>
+      </div>
+      <div class="recent-post">
+        <img src="https://images.unsplash.com/photo-1483721310020-03333e577078?w=150&q=80" alt="">
+        <div><h4>Laborum corporis quo dara net para</h4><div class="d">Jan 1, 2026</div></div>
+      </div>
+      <div class="recent-post">
+        <img src="https://images.unsplash.com/photo-1495364141860-b0d03eccd065?w=150&q=80" alt="">
+        <div><h4>Et dolores corrupti quae illo quod dolor</h4><div class="d">Jan 1, 2026</div></div>
+      </div>
+    </div>
+
+    <div class="widget">
+      <div class="widget-title">Tags</div>
+      <div class="tags">
+        <span>App</span><span>IT</span><span>Business</span><span>Mac</span>
+        <span>Design</span><span>Office</span><span>Creative</span><span>Studio</span>
+        <span>Smart</span><span>Tips</span><span>Marketing</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== PAGINATION ===================== -->
+<div class="pagination">
+  <a href="#">‹</a>
+  <a href="#">1</a>
+  <a href="#" class="active">2</a>
+  <a href="#">3</a>
+  <a href="#">4</a>
+  <span class="dots">…</span>
+  <a href="#">10</a>
+  <a href="#">›</a>
+</div>
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <h3 class="brand">Blogy</h3>
+      <p>A108 Adam Street<br>New York, NY 535022</p>
+      <p class="contact-line"><b>Phone:</b> +1 5589 55488 55</p>
+      <p class="contact-line"><b>Email:</b> info@example.com</p>
+      <div class="footer-social">
+        <a href="#" aria-label="X"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.5 8.6L23.3 22h-7l-5.5-6.7L4.5 22H1.4l8-9.2L1 2h7.2l5 6.1L18.9 2Zm-1.2 18h1.7L7.4 4H5.6l12.1 16Z"/></svg></a>
+        <a href="#" aria-label="Facebook"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12Z"/></svg></a>
+        <a href="#" aria-label="Instagram"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+        <a href="#" aria-label="LinkedIn"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-1 1.83-2 3.77-2 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.6c0-1.35-.03-3.1-1.9-3.1-1.9 0-2.2 1.5-2.2 3v5.7h-4V9Z"/></svg></a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Useful Links</h4>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">About us</a></li>
+        <li><a href="#">Services</a></li>
+        <li><a href="#">Terms of service</a></li>
+        <li><a href="#">Privacy policy</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Our Services</h4>
+      <ul>
+        <li><a href="#">Web Design</a></li>
+        <li><a href="#">Web Development</a></li>
+        <li><a href="#">Product Management</a></li>
+        <li><a href="#">Marketing</a></li>
+        <li><a href="#">Graphic Design</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Hic solutasetp</h4>
+      <ul>
+        <li><a href="#">Molestiae accusamus iure</a></li>
+        <li><a href="#">Excepturi dignissimos</a></li>
+        <li><a href="#">Suscipit distinctio</a></li>
+        <li><a href="#">Dilecta</a></li>
+        <li><a href="#">Sit quas consectetur</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Nobis illum</h4>
+      <ul>
+        <li><a href="#">Ipsum</a></li>
+        <li><a href="#">Laudantium dolorum</a></li>
+        <li><a href="#">Dinera</a></li>
+        <li><a href="#">Trodelas</a></li>
+        <li><a href="#">Flexo</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    © Copyright <b>Blogy</b> All Rights Reserved
+    <div class="credit">Designed by <a href="#">BootstrapMade</a></div>
+  </div>
+</footer>
+
+<div class="scroll-top" title="Наверх" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+</div>
+
+</body>
+</html>

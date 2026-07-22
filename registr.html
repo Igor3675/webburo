@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Регистрация — Проектоград</title>
+<style>
+  :root{
+    --primary:#5352EE;
+    --accent:#FFD166;
+    --light:#9996FF;
+    --ink:#242349;
+    --text:#565587;
+    --muted:#9998c0;
+    --gray-bg:#f6f6fb;
+    --tag-bg:#EDECFF;
+    --error:#ef5b6b;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:"Poppins","Segoe UI",Arial,sans-serif;
+    background:linear-gradient(160deg, #f6f6fb 0%, #ebeafd 100%);
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px 20px;
+  }
+
+  .reg-wrap{
+    width:100%;
+    max-width:960px;
+    background:#fff;
+    border-radius:22px;
+    box-shadow:0 30px 70px rgba(83,82,238,.18);
+    overflow:hidden;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+  }
+
+  /* ===== LEFT VISUAL PANEL ===== */
+  .side-panel{
+    background:linear-gradient(155deg, var(--primary) 0%, #6f6ef2 55%, var(--light) 100%);
+    color:#fff;
+    padding:52px 44px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    position:relative;
+    overflow:hidden;
+  }
+  .side-panel::before{
+    content:"";
+    position:absolute;
+    width:280px; height:280px;
+    background:rgba(255,209,102,.18);
+    border-radius:50%;
+    top:-90px; right:-90px;
+  }
+  .side-panel::after{
+    content:"";
+    position:absolute;
+    width:200px; height:200px;
+    background:rgba(255,255,255,.08);
+    border-radius:50%;
+    bottom:-60px; left:-60px;
+  }
+  .side-panel .top{ position:relative; z-index:1; }
+  .side-logo{ font-size:22px; font-weight:700; margin-bottom:50px; display:flex; align-items:center; gap:10px; }
+  .side-logo .dot{ color:var(--accent); }
+  .side-panel h2{ font-size:30px; font-weight:800; line-height:1.35; margin-bottom:18px; }
+  .side-panel p{ font-size:14.5px; line-height:1.8; opacity:.9; max-width:320px; }
+
+  .side-features{ position:relative; z-index:1; display:flex; flex-direction:column; gap:16px; margin-top:40px; }
+  .side-feature{ display:flex; align-items:center; gap:12px; font-size:14px; font-weight:600; }
+  .side-feature .ico{
+    width:32px; height:32px; border-radius:9px; background:rgba(255,255,255,.18);
+    display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0;
+  }
+
+  /* ===== RIGHT FORM ===== */
+  .form-panel{ padding:52px 48px; }
+  .form-eyebrow{
+    display:inline-flex; align-items:center; gap:10px;
+    color:var(--light); font-size:12.5px; font-weight:700;
+    letter-spacing:2px; text-transform:uppercase; margin-bottom:10px;
+  }
+  .form-panel h1{ font-size:26px; font-weight:800; color:var(--ink); margin-bottom:8px; }
+  .form-panel .sub{ font-size:14px; color:var(--muted); margin-bottom:32px; }
+
+  form{ display:flex; flex-direction:column; gap:20px; }
+  .field-row{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .field{ display:flex; flex-direction:column; gap:8px; position:relative; }
+  .field label{ font-size:13px; font-weight:700; color:var(--ink); }
+  .field input, .field select{
+    padding:14px 16px; border:1.8px solid #e5e4f5; border-radius:10px;
+    font-size:14.5px; font-family:inherit; color:var(--ink); outline:none;
+    transition:border-color .15s ease, box-shadow .15s ease; background:#fff;
+  }
+  .field input:focus, .field select:focus{
+    border-color:var(--primary); box-shadow:0 0 0 4px rgba(83,82,238,.12);
+  }
+  .field input::placeholder{ color:#c2c1e6; }
+  .field.error input, .field.error select{ border-color:var(--error); }
+  .field .err-msg{
+    font-size:12px; color:var(--error); font-weight:600; display:none;
+  }
+  .field.error .err-msg{ display:block; }
+
+  .age-wrap{ position:relative; }
+  .age-wrap select{ appearance:none; -webkit-appearance:none; cursor:pointer; }
+  .age-wrap::after{
+    content:"▾"; position:absolute; right:16px; top:50%; transform:translateY(-50%);
+    color:var(--primary); font-size:14px; pointer-events:none;
+  }
+
+  .submit-btn{
+    margin-top:8px; padding:16px; border:none; border-radius:12px;
+    background:var(--primary); color:#fff; font-size:15px; font-weight:700;
+    cursor:pointer; transition:background .15s ease;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .submit-btn:hover{ background:#403fd1; }
+  .submit-btn svg{ width:17px; height:17px; }
+
+  .form-footer-note{
+    text-align:center; font-size:12.5px; color:var(--muted); margin-top:18px; line-height:1.6;
+  }
+
+  /* success state */
+  .success-screen{ display:none; text-align:center; padding:30px 0; }
+  .success-screen.show{ display:block; }
+  .success-emoji{
+    width:74px; height:74px; border-radius:50%; background:var(--tag-bg);
+    display:flex; align-items:center; justify-content:center; font-size:34px;
+    margin:0 auto 22px;
+  }
+  .success-screen h2{ font-size:22px; font-weight:800; color:var(--ink); margin-bottom:12px; }
+  .success-screen p{ font-size:14px; color:var(--text); line-height:1.8; margin-bottom:8px; }
+  .success-screen b{ color:var(--primary); }
+
+  @media (max-width:800px){
+    .reg-wrap{ grid-template-columns:1fr; }
+    .side-panel{ padding:38px 32px; }
+    .side-features{ display:none; }
+    .form-panel{ padding:40px 28px; }
+    .field-row{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="reg-wrap">
+
+  <!-- LEFT VISUAL PANEL -->
+  <div class="side-panel">
+    <div class="top">
+      <div class="side-logo">🏕️ Проектоград<span class="dot">.</span></div>
+      <h2>Добро пожаловать в город новых проектов!</h2>
+      <p>Заполни короткую анкету — и мы забронируем за тобой место в ближайшей смене «Проектограда».</p>
+    </div>
+
+    <div class="side-features">
+      <div class="side-feature"><span class="ico">✅</span> Займёт меньше минуты</div>
+      <div class="side-feature"><span class="ico">🔒</span> Данные под защитой</div>
+      <div class="side-feature"><span class="ico">📩</span> Подтверждение придёт на почту</div>
+    </div>
+  </div>
+
+  <!-- RIGHT FORM -->
+  <div class="form-panel">
+
+    <div id="formState">
+      <div class="form-eyebrow">РЕГИСТРАЦИЯ</div>
+      <h1>Заявка на смену</h1>
+      <p class="sub">Расскажи немного о себе — остальное мы возьмём на себя.</p>
+
+      <form id="regForm" novalidate>
+
+        <div class="field-row">
+          <div class="field" id="fieldName">
+            <label for="firstName">Имя</label>
+            <input type="text" id="firstName" placeholder="Например, Мария">
+            <span class="err-msg">Пожалуйста, укажи имя</span>
+          </div>
+          <div class="field" id="fieldSurname">
+            <label for="lastName">Фамилия</label>
+            <input type="text" id="lastName" placeholder="Например, Иванова">
+            <span class="err-msg">Пожалуйста, укажи фамилию</span>
+          </div>
+        </div>
+
+        <div class="field" id="fieldDistrict">
+          <label for="district">Район</label>
+          <input type="text" id="district" placeholder="Например, Пресненский">
+          <span class="err-msg">Пожалуйста, укажи район</span>
+        </div>
+
+        <div class="field" id="fieldAge">
+          <label for="age">Сколько вам лет</label>
+          <div class="age-wrap">
+            <select id="age">
+              <option value="" disabled selected>Выберите возраст</option>
+              <option>7</option><option>8</option><option>9</option><option>10</option>
+              <option>11</option><option>12</option><option>13</option><option>14</option>
+              <option>15</option><option>16</option><option>17</option>
+            </select>
+          </div>
+          <span class="err-msg">Пожалуйста, выбери возраст</span>
+        </div>
+        <button type="submit" class="submit-btn">
+          Отправить заявку
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </form>
+
+      <div class="form-footer-note">Нажимая «Отправить заявку», ты соглашаешься с обработкой персональных данных.</div>
+    </div>
+
+    <!-- SUCCESS STATE -->
+    <div class="success-screen" id="successScreen">
+      <div class="success-emoji">🎉</div>
+      <h2>Заявка отправлена!</h2>
+      <p>Спасибо, <b id="successName">Гость</b>! Мы получили твою анкету и скоро свяжемся с тобой.</p>
+      <p>До встречи в «Проектограде»!</p>
+      <button type="submit" class="submit-btn">
+          Отправить заявку
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>   
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const form = document.getElementById('regForm');
+  const formState = document.getElementById('formState');
+  const successScreen = document.getElementById('successScreen');
+
+  const fields = {
+    firstName: document.getElementById('fieldName'),
+    lastName: document.getElementById('fieldSurname'),
+    district: document.getElementById('fieldDistrict'),
+    age: document.getElementById('fieldAge'),
+  };
+
+  form.addEventListener('submit', e=>{
+    e.preventDefault();
+    let valid = true;
+
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName = document.getElementById('lastName').value.trim();
+    const district = document.getElementById('district').value.trim();
+    const age = document.getElementById('age').value;
+
+    Object.values(fields).forEach(f => f.classList.remove('error'));
+
+    if(!firstName){ fields.firstName.classList.add('error'); valid = false; }
+    if(!lastName){ fields.lastName.classList.add('error'); valid = false; }
+    if(!district){ fields.district.classList.add('error'); valid = false; }
+    if(!age){ fields.age.classList.add('error'); valid = false; }
+
+    if(!valid) return;
+
+    document.getElementById('successName').textContent = `${firstName} ${lastName}`;
+    formState.style.display = 'none';
+    successScreen.classList.add('show');
+  });
+</script>
+
+</body>
+</html>

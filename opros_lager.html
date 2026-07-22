@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Квест «Знаешь ли ты Проектоград?»</title>
+<style>
+  :root{
+    --primary:#5352EE;
+    --accent:#FFD166;
+    --light:#9996FF;
+    --ink:#242349;
+    --text:#565587;
+    --muted:#9998c0;
+    --gray-bg:#f6f6fb;
+    --tag-bg:#EDECFF;
+    --correct:#2fb872;
+    --correct-bg:#e8f8f0;
+    --wrong:#ef5b6b;
+    --wrong-bg:#fdedef;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:"Poppins","Segoe UI",Arial,sans-serif;
+    background:var(--gray-bg);
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px 20px;
+  }
+
+  .quiz-wrap{ width:100%; max-width:680px; }
+
+  .quiz-header{ text-align:center; margin-bottom:26px; }
+  .quiz-eyebrow{
+    display:inline-flex; align-items:center; gap:10px;
+    color:var(--light); font-size:12.5px; font-weight:700;
+    letter-spacing:2px; text-transform:uppercase; margin-bottom:10px;
+  }
+  .quiz-header h1{ font-size:28px; font-weight:800; color:var(--ink); }
+
+  .quiz-card{
+    background:#fff; border-radius:18px;
+    box-shadow:0 20px 50px rgba(83,82,238,.14);
+    padding:38px 36px 34px; position:relative; overflow:hidden;
+  }
+  .quiz-card::before{
+    content:""; position:absolute; top:0; left:0; right:0; height:6px;
+    background:linear-gradient(90deg, var(--primary), var(--light));
+  }
+
+  .progress-row{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:22px; font-size:13px; font-weight:600; color:var(--muted);
+  }
+  .progress-row .score{ color:var(--primary); }
+  .progress-track{ height:8px; background:var(--tag-bg); border-radius:20px; overflow:hidden; margin-bottom:30px; }
+  .progress-bar{ height:100%; background:linear-gradient(90deg,var(--primary),var(--light)); border-radius:20px; width:0%; transition:width .4s ease; }
+
+  .q-number{
+    display:inline-block; background:var(--tag-bg); color:var(--primary);
+    font-size:12.5px; font-weight:700; padding:6px 14px; border-radius:20px; margin-bottom:16px;
+  }
+  .q-text{ font-size:20px; font-weight:700; color:var(--ink); line-height:1.4; margin-bottom:28px; }
+
+  .options{ display:flex; flex-direction:column; gap:14px; margin-bottom:10px; }
+  .option{
+    display:flex; align-items:center; gap:14px;
+    padding:16px 20px; border:2px solid var(--tag-bg); border-radius:12px;
+    background:#fff; cursor:pointer; font-size:15px; font-weight:600; color:var(--text);
+    transition:all .15s ease; text-align:left;
+  }
+  .option:hover:not(.disabled){ border-color:var(--light); background:var(--tag-bg); }
+  .option .letter{
+    width:30px; height:30px; border-radius:50%; background:var(--tag-bg); color:var(--primary);
+    display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800;
+    flex-shrink:0; transition:all .15s ease;
+  }
+  .option .icon{ margin-left:auto; font-size:18px; opacity:0; }
+  .option.correct{ border-color:var(--correct); background:var(--correct-bg); color:var(--correct); }
+  .option.correct .letter{ background:var(--correct); color:#fff; }
+  .option.correct .icon{ opacity:1; }
+  .option.wrong{ border-color:var(--wrong); background:var(--wrong-bg); color:var(--wrong); }
+  .option.wrong .letter{ background:var(--wrong); color:#fff; }
+  .option.wrong .icon{ opacity:1; }
+  .option.disabled{ cursor:default; }
+  .option.dim{ opacity:.5; }
+
+  .feedback{ margin-top:18px; padding:16px 18px; border-radius:10px; font-size:14px; line-height:1.6; display:none; }
+  .feedback.show{ display:block; }
+  .feedback.ok{ background:var(--correct-bg); color:#1c7d51; }
+  .feedback.bad{ background:var(--wrong-bg); color:#c33b49; }
+
+  .next-btn{
+    margin-top:26px; width:100%; padding:15px; border:none; border-radius:10px;
+    background:var(--primary); color:#fff; font-size:15px; font-weight:700;
+    cursor:pointer; display:none; align-items:center; justify-content:center; gap:8px;
+  }
+  .next-btn.show{ display:flex; }
+  .next-btn:hover{ background:#403fd1; }
+
+  .result-screen{ display:none; text-align:center; }
+  .result-screen.show{ display:block; }
+  .result-emoji{ font-size:56px; margin-bottom:16px; }
+  .result-title{ font-size:24px; font-weight:800; color:var(--ink); margin-bottom:10px; }
+  .result-desc{ font-size:14.5px; color:var(--text); line-height:1.7; margin-bottom:26px; }
+  .result-score{
+    display:inline-flex; align-items:baseline; gap:8px;
+    background:var(--tag-bg); padding:14px 30px; border-radius:14px; margin-bottom:30px;
+  }
+  .result-score b{ font-size:34px; color:var(--primary); font-weight:800; }
+  .result-score span{ font-size:14px; color:var(--muted); font-weight:600; }
+  .restart-btn{
+    padding:14px 32px; border:none; border-radius:10px;
+    background:var(--accent); color:var(--ink); font-size:14.5px; font-weight:700; cursor:pointer;
+  }
+  .restart-btn:hover{ background:#f5c04a; }
+
+  @media (max-width:600px){
+    .quiz-card{ padding:28px 22px 26px; }
+    .q-text{ font-size:18px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="quiz-wrap">
+  <div class="quiz-header">
+    <div class="quiz-eyebrow">КВЕСТ ЛАГЕРЯ</div>
+    <h1>Знаешь ли ты Проектоград?</h1>
+  </div>
+
+  <div class="quiz-card">
+
+    <!-- QUIZ STATE -->
+    <div id="quizState">
+      <div class="progress-row">
+        <span id="qCounter">Вопрос 1 из 15</span>
+        <span class="score">Верно: <span id="scoreCounter">0</span></span>
+      </div>
+      <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+
+      <div class="q-number" id="qLabel">ВОПРОС 1</div>
+      <div class="q-text" id="qText">Загрузка...</div>
+
+      <div class="options" id="optionsWrap"></div>
+
+      <div class="feedback" id="feedback"></div>
+
+      <button class="next-btn" id="nextBtn">Следующий вопрос →</button>
+    </div>
+
+    <!-- RESULT STATE -->
+    <div class="result-screen" id="resultScreen">
+      <div class="result-emoji" id="resultEmoji">🏆</div>
+      <div class="result-title" id="resultTitle">Отлично!</div>
+      <p class="result-desc" id="resultDesc"></p>
+      <div class="result-score"><b id="finalScore">0</b><span>/ 15 верно</span></div>
+      <br>
+      <button class="restart-btn" id="restartBtn">Пройти ещё раз</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const questions = [
+    {
+      q: "Сколько длится летняя смена 2026 года в «Проектограде»?",
+      options: ["10 дней", "13 дней", "12 дней", "14 дней"],
+      correct: 2
+    },
+    {
+      q: "Сколько раз в день кормят жителей «Проектограда»?",
+      options: ["3 раза", "5 раз", "6 раз", "4 раза"],
+      correct: 2
+    },
+    {
+      q: "В каком месте Подмосковья располагается «Проектоград»?",
+      options: ["Вблизи Сергиева Посада", "В окрестностях Звенигорода", "На берегу Истринского водохранилища", "Рядом с Клином"],
+      correct: 1
+    },
+    {
+      q: "На базе какого объекта работает лагерь?",
+      options: ["Детский оздоровительный комплекс «Орлёнок»", "Пансионат «Университетский» МГУ", "Санаторий «Звенигородский»", "База отдыха «Лесная сказка»"],
+      correct: 1
+    },
+    {
+      q: "Как в «Проектограде» называют тематические подразделения, где ребята осваивают разные профессии?",
+      options: ["Отряды", "Бюро", "Лаборатории", "Студии"],
+      correct: 1
+    },
+    {
+      q: "Что символизирует название «Проектоград»?",
+      options: ["Город, где каждый день — новый проект", "Город, построенный из макетов проектов", "Город, в котором живут только инженеры и проектировщики", "Город, названный в честь основателя лагеря"],
+      correct: 0
+    },
+    {
+      q: "Какая из этих активностей НЕ характерна для «Проектограда»?",
+      options: ["Робототехника и программирование", "Медиа и блогинг", "Театральные постановки и импровизация", "Профессиональные спортивные сборы по хоккею"],
+      correct: 3
+    },
+    {
+      q: "Как обычно называют участников смены в «Проектограде»?",
+      options: ["Жители Проектограда", "Сотрудники бюро", "Граждане города", "Все варианты верны"],
+      correct: 0
+    },
+    {
+      q: "Что чаще всего становится итогом работы бюро за смену?",
+      options: ["Письменный отчёт", "Готовый продукт или презентация проекта", "Экзамен по пройденному материалу", "Художественный фильм о смене"],
+      correct: 1
+    },
+    {
+      q: "Какой из этих форматов НЕ используется в «Проектограде» для подведения итогов?",
+      options: ["Ярмарка проектов", "Открытая защита перед экспертами", "Внутренний конкурс без показа результатов", "Публичная презентация для жителей"],
+      correct: 2
+    },
+    {
+      q: "Какая особенность отличает проживание в лагере?",
+      options: ["Палаточный городок", "Одно- и двухкомнатные номера со всеми удобствами", "Кубрики по 10–12 человек", "Отдельные домики на 4 человека"],
+      correct: 1
+    },
+    {
+      q: "В какое время года «Проектоград» проводит сезоны (смены)?",
+      options: ["Только летом", "Летом и на зимних каникулах", "В течение всего года, включая мини-сезоны на праздники", "Весной и осенью"],
+      correct: 1
+    },
+    {
+      q: "Что в «Проектограде» понимают под «Стартбюро»?",
+      options: ["Бюро для самых старших участников", "Программа для учащихся начальной школы", "Бюро, которое первым начинает работу на смене", "Бюро регистрации и распределения по районам"],
+      correct: 3
+    },
+    {
+      q: "Какой элемент инфраструктуры лагеря обычно находится рядом с КПП?",
+      options: ["Столовая", "Главный корпус и зона регистрации", "Спортивная площадка", "Медблок"],
+      correct: 3
+    },
+    {
+      q: "Что является одной из главных ценностей лагеря?",
+      options: ["Максимальная соревновательность между участниками", "Сочетание образования, творчества и отдыха", "Строгий режим и дисциплина", "Полная самостоятельность детей без участия взрослых"],
+      correct: 1
+    }
+  ];
+
+  let current = 0;
+  let score = 0;
+  let answered = false;
+
+  const qText = document.getElementById('qText');
+  const qLabel = document.getElementById('qLabel');
+  const qCounter = document.getElementById('qCounter');
+  const scoreCounter = document.getElementById('scoreCounter');
+  const progressBar = document.getElementById('progressBar');
+  const optionsWrap = document.getElementById('optionsWrap');
+  const feedback = document.getElementById('feedback');
+  const nextBtn = document.getElementById('nextBtn');
+  const quizState = document.getElementById('quizState');
+  const resultScreen = document.getElementById('resultScreen');
+
+  function renderQuestion(){
+    answered = false;
+    feedback.className = 'feedback';
+    feedback.textContent = '';
+    nextBtn.classList.remove('show');
+
+    const item = questions[current];
+    qLabel.textContent = `ВОПРОС ${current+1}`;
+    qCounter.textContent = `Вопрос ${current+1} из ${questions.length}`;
+    qText.textContent = item.q;
+    progressBar.style.width = `${(current/questions.length)*100}%`;
+
+    optionsWrap.innerHTML = '';
+    const letters = ['А','Б','В','Г'];
+    item.options.forEach((opt, idx)=>{
+      const btn = document.createElement('button');
+      btn.className = 'option';
+      btn.innerHTML = `<span class="letter">${letters[idx]}</span><span>${opt}</span><span class="icon"></span>`;
+      btn.addEventListener('click', ()=> selectAnswer(idx, btn));
+      optionsWrap.appendChild(btn);
+    });
+  }
+
+  function selectAnswer(idx, btn){
+    if(answered) return;
+    answered = true;
+    const item = questions[current];
+    const allOptions = optionsWrap.querySelectorAll('.option');
+
+    allOptions.forEach((el, i)=>{
+      el.classList.add('disabled');
+      if(i !== idx && i !== item.correct) el.classList.add('dim');
+      if(i === item.correct){
+        el.classList.add('correct');
+        el.querySelector('.icon').textContent = '✓';
+      }
+    });
+
+    if(idx === item.correct){
+      score++;
+      scoreCounter.textContent = score;
+      feedback.className = 'feedback ok show';
+      feedback.textContent = '✅ Правильно!';
+    } else {
+      btn.classList.remove('dim');
+      btn.classList.add('wrong');
+      btn.querySelector('.icon').textContent = '✕';
+      feedback.className = 'feedback bad show';
+      feedback.textContent = '❌ Неверно. Правильный ответ — ' + item.options[item.correct] + '.';
+    }
+
+    nextBtn.classList.add('show');
+    nextBtn.textContent = current === questions.length - 1 ? 'Посмотреть результат →' : 'Следующий вопрос →';
+  }
+
+  nextBtn.addEventListener('click', ()=>{
+    current++;
+    if(current < questions.length){
+      renderQuestion();
+    } else {
+      showResults();
+    }
+  });
+
+  function showResults(){
+    progressBar.style.width = '100%';
+    quizState.style.display = 'none';
+    resultScreen.classList.add('show');
+    document.getElementById('finalScore').textContent = score;
+
+    let emoji, title, desc;
+    const pct = score / questions.length;
+    if(pct === 1){
+      emoji = '🏆'; title = 'Идеальный результат!';
+      desc = 'Ты знаешь «Проектоград» вдоль и поперёк, ты настоящий старожил лагеря!';
+    } else if(pct >= 0.7){
+      emoji = '🎉'; title = 'Отличный результат!';
+      desc = 'Почти всё верно! Ты явно внимательно изучал(а) жизнь лагеря.';
+    } else if(pct >= 0.4){
+      emoji = '🙂'; title = 'Неплохо!';
+      desc = 'Основы ты уловил(а), но кое-что стоит уточнить у кураторов.';
+    } else {
+      emoji = '🧭'; title = 'Пора на экскурсию по лагерю!';
+      desc = 'Загляни на карту «Проектограда» и попробуй пройти квест ещё раз.';
+    }
+    document.getElementById('resultEmoji').textContent = emoji;
+    document.getElementById('resultTitle').textContent = title;
+    document.getElementById('resultDesc').textContent = desc;
+  }
+
+  document.getElementById('restartBtn').addEventListener('click', ()=>{
+    current = 0; score = 0;
+    scoreCounter.textContent = 0;
+    resultScreen.classList.remove('show');
+    quizState.style.display = 'block';
+    renderQuestion();
+  });
+
+  renderQuestion();
+</script>
+
+</body>
+</html>
